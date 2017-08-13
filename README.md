@@ -24,7 +24,11 @@ Install required `python` modules:
 
 ## Running the Example
 
-Navigate to the repository's root directory, then run:
+Navigate to the repository's root directory, then activate virtual environment:
+
+`flask\Scripts\activate`
+
+Then to start the server, run:
 
 `python main.py`
 
