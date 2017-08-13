@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Flask-SocketIO Test</title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js" integrity="sha256-sdmLD9jD1PIzq3KOQPNSGZYxjv76rds79Mnyk5JNp1M=" crossorigin="anonymous"></script>
+	</head>
+	<body>
+
+		<h1>Roomname: <textarea id="room_name"></textarea></h1>
+
+		<div id="forms">
+			<form id="emit" method="POST" action="#">
+				<input type="text" name="emit_data" id="emit_data" placeholder="Message">
+				<input type="submit" value="Echo">
+			</form>
+
+			<form id="broadcast" method="POST" action="#">
+				<input type="text" name="broadcast_data" id="broadcast_data" placeholder="Broadcast Message">
+				<input type="submit" value="Broadcast">
+			</form>
+
+			<form id="join" method="POST" action="#">
+				<input type="text" name="join_data" id="join_data" placeholder="Room to Join">
+				<input type="submit" value="Join">
+			</form>
+
+			<form id="leave" method="POST" action="#">
+				<input type="text" name="leave_data" id="leave_data" placeholder="Room to Leave">
+				<input type="submit" value="Leave Room">
+			</form>
+
+			<form id="send_room" method="POST" action="#">
+				<input type="text" name="send_room_data" id="send_room_data" placeholder="Message to send to roommates">
+				<input type="submit" value="Send to Roommates">
+			</form>
+
+			<form id="close" method="POST" action="#">
+				<input type="text" name="close_data" id="close_data" placeholder="Room to Close">
+				<input type="submit" value="Close Room">
+			</form>
+
+			<form id="ping" method="POST" action="#">
+				<input type="submit" value="Ping">
+			</form>
+		</div>
+
+		<h5>Pingtime</h5>
+		<textarea id="pingtime"></textarea>
+
+		<h2>Received: </h2>
+		<div id="log"></div>
+	
+
+		<script type="text/javascript">
+			//jquery wrapper
+			$(document).ready(function() {
+				var socket = io.connect();
+
+				socket.on('my response', function(msg) {
+					console.log('appending ' + msg.data);
+					$('#log').append('<p>Received: ' + msg.data + '</p>');
+				});
+
+				$('form#emit').submit(function(event) {
+					console.log('emitting ' + $('#emit_data').val());
+					socket.emit('my event', {data: $('#emit_data').val()});
+					return false;
+				});
+
+				$('form#broadcast').submit(function(event) {
+					console.log('broadcasting ' + $('#broadcast_data').val());
+					socket.emit('my broadcast event', {data: $('#broadcast_data').val()});
+					return false;
+				});
+
+				$('form#join').submit(function(event) {
+					console.log('User ' + socket.id + ' requesting: [join] room ' + $('#join_data').val());
+					socket.emit('join', {room: $('#join_data').val()});
+
+					$('#room_name').val($('#join_data').val());
+
+					return false;
+				});
+
+				$('form#leave').submit(function(event) {
+					console.log('User ' + socket.id + ' requesting: [leave] room ' + $('#leave_data').val());
+					socket.emit('leave', {room: $('#leave_data').val()});
+					
+					$('#room_name').val('');
+
+					return false;
+				});
+
+				$('form#send_room').submit(function(event) {
+					socket.emit('send_room', {room: $('#room_name').val(), data: $('#send_room_data').val()});
+					return false;
+				});
+
+				$('form#close').submit(function(event) {
+					socket.emit('close_room', {room: $('#close_data').val()});
+
+					return false;
+				});
+
+				$('form#ping').submit(function(event) {
+					console.log('pinging server.')
+					var startTime = (new Date).getTime();
+					socket.emit('ping');
+					var latency = (new Date).getTime() - startTime;
+
+					$('#pingtime').val("Server-client latency is: " + latency);
+
+					return false;
+				});
+			});
+		</script>
+	</body>
+</html>
