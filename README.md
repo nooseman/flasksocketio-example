@@ -24,7 +24,7 @@ Install required `python` modules:
 
 ## Running the Example
 
-Navigate to the repository's root directory, then activate virtual environment:
+Navigate to the repository's root directory, then activate the virtual environment:
 
 `flask\Scripts\activate`
 
