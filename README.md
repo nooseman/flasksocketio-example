@@ -10,7 +10,7 @@ Clone local repo:
 
 `cd flasksocketio-example`
 
-Make virtual environment:
+Make a virtual environment to avoid breaking stuff:
 
 `virtualenv flask`
 
