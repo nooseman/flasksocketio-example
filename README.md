@@ -7,6 +7,7 @@ This is a very simple implementation of `SocketIO`'s client-server communication
 Clone local repo:
 
 `git clone https://github.com/nooseman/flasksocketio-example`
+
 `cd flasksocketio-example`
 
 Make virtual environment:
